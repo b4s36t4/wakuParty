@@ -74,6 +74,9 @@ export const Scanner = ({navigation}: ScannerScreen) => {
           device={device}
           isActive={isFocused}
           style={styles.camera}
+          onError={error => {
+            console.log(error, 'error...');
+          }}
         />
       </View>
       <Button mode="contained-tonal" style={styles.chooseButton}>
