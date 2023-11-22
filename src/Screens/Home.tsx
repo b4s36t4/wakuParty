@@ -22,22 +22,28 @@ export const Home = ({navigation}: HomeScreen) => {
     historySheetRef.current?.expand();
   };
 
-  const renderItem = useCallback((partyItem: any, index: number) => {
-    const decodedItem = Party.decode(partyItem?.payload ?? []).toJSON();
+  const renderItem = useCallback(
+    (partyItem: any, index: number) => {
+      const decodedItem = Party.decode(partyItem?.payload ?? []).toJSON();
 
-    const onPressQRButton = () => {
-      console.log('hi');
-    };
+      const onPressQRButton = () => {
+        navigation.navigate('Host', {
+          address: decodedItem.address,
+          title: decodedItem.message,
+        });
+      };
 
-    return (
-      <View key={index} style={styles.historyCard}>
-        <Text style={styles.cardText}>{decodedItem.message}</Text>
-        <Button onPress={onPressQRButton} mode="contained-tonal">
-          View QR
-        </Button>
-      </View>
-    );
-  }, []);
+      return (
+        <View key={index} style={styles.historyCard}>
+          <Text style={styles.cardText}>{decodedItem.message}</Text>
+          <Button onPress={onPressQRButton} mode="contained-tonal">
+            View QR
+          </Button>
+        </View>
+      );
+    },
+    [navigation],
+  );
 
   if (status === 'connecting') {
     return (
@@ -109,9 +115,21 @@ export const Home = ({navigation}: HomeScreen) => {
         <ScrollView contentContainerStyle={styles.scrollContainer}>
           <Text variant="titleMedium">Previous Parties</Text>
           {parties.length > 0 ? (
-            [...parties, ...parties, ...parties, ...parties].map(renderItem)
+            parties.map(renderItem)
           ) : (
-            <Text>You don't have any previous parties</Text>
+            <Center>
+              <Text variant="bodyLarge">
+                You don't have any previous parties
+              </Text>
+              <Button
+                style={{marginTop: 10}}
+                mode="elevated"
+                onPress={() => {
+                  historySheetRef.current?.close();
+                }}>
+                Close
+              </Button>
+            </Center>
           )}
         </ScrollView>
       </BottomSheet>
@@ -146,6 +164,7 @@ const styles = StyleSheet.create({
     padding: 10,
     width: '100%',
     overflow: 'hidden',
+    height: '100%',
   },
   actionContainer: {
     display: 'flex',

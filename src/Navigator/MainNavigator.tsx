@@ -4,6 +4,7 @@ import {RootStackParamList} from '../types/Screen';
 import {Home} from '../Screens/Home';
 import {Scanner} from '../Screens/Scanner';
 import {Host} from '../Screens/Host';
+import {Sponsor} from '../Screens/Send';
 
 const MainStack = createNativeStackNavigator<RootStackParamList>();
 
@@ -13,6 +14,7 @@ export const MainNavigator = () => {
       <MainStack.Screen name="Home" component={Home} />
       <MainStack.Screen name="Scanner" component={Scanner} />
       <MainStack.Screen name="Host" component={Host} />
+      <MainStack.Screen name="Sponsor" component={Sponsor} />
     </MainStack.Navigator>
   );
 };

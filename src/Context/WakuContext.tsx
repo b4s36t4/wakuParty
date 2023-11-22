@@ -50,7 +50,7 @@ nodeConfig.filter = true;
 
 export const WakuProvider: FC<PropsWithChildren> = ({children}) => {
   const [nodeStarted, setIsNodeStarted] = useState(false);
-  const {address, isConnected} = useAccount();
+  const {address, isConnected, status} = useAccount();
 
   const [isPeersConnecting, setIsPeersConnecting] = useState<boolean | null>(
     null,
@@ -69,6 +69,9 @@ export const WakuProvider: FC<PropsWithChildren> = ({children}) => {
       return;
     }
     const query = new StoreQuery();
+
+    console.log(`[Query] Loading Parties for topic ${qrTopic}`);
+
     query.contentFilters.push(new ContentFilter(qrTopic));
 
     const result = await storeQuery(query);
@@ -78,12 +81,12 @@ export const WakuProvider: FC<PropsWithChildren> = ({children}) => {
   }, [qrTopic, isPeersConnecting]);
 
   useEffect(() => {
-    if (!isConnected || !address) {
+    if (status !== 'connected') {
       return;
     }
     const _topic = getQRTopic(address);
     setQRTopic(_topic);
-  }, [address, isConnected]);
+  }, [address, status]);
 
   const onMessageRecieve = (message: any) => {
     console.log(message, 'message');
@@ -187,6 +190,8 @@ export const WakuProvider: FC<PropsWithChildren> = ({children}) => {
     },
     [address],
   );
+
+  const sponsorParty = useCallback(value => {});
 
   return (
     <context.Provider value={{nodeStarted, createParty, parties}}>

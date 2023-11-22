@@ -7,8 +7,10 @@ import QRCode from 'react-native-qrcode-svg';
 import {useAccount} from 'wagmi';
 import {HostScreen} from '../types/Screen';
 
-export const Host = ({navigation}: HostScreen) => {
-  const [partyName, setPartyName] = useState<string>('');
+export const Host = ({navigation, route}: HostScreen) => {
+  const {title} = route.params ?? {};
+
+  const [partyName, setPartyName] = useState<string>(title ?? '');
   const [loading, setIsLoading] = useState(false);
 
   const {address} = useAccount();
@@ -19,10 +21,18 @@ export const Host = ({navigation}: HostScreen) => {
 
   const {createParty} = useWaku();
 
+  const isView = partyName === title;
+
   const onCreateParty = async () => {
-    if (partyName) {
+    if (!partyName) {
       return;
     }
+
+    if (isView) {
+      bottomSheetRef.current?.expand();
+      return;
+    }
+
     setIsLoading(true);
     await createParty(partyName);
     setIsLoading(false);
@@ -51,13 +61,14 @@ export const Host = ({navigation}: HostScreen) => {
         value={partyName}
         mode="outlined"
         style={styles.inputContainer}
+        disabled={isView}
       />
       <Button
         onPress={onCreateParty}
         mode="contained-tonal"
         loading={loading}
         style={styles.create}>
-        Create
+        {isView ? 'View QR' : 'Create'}
       </Button>
 
       <BottomSheet
