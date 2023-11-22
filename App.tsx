@@ -1,118 +1,58 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- */
-
+import '@walletconnect/react-native-compat';
+import {NavigationContainer} from '@react-navigation/native';
+import {WagmiConfig} from 'wagmi';
+import {mainnet, polygon} from 'viem/chains';
+import {
+  createWeb3Modal,
+  defaultWagmiConfig,
+  Web3Modal,
+} from '@web3modal/wagmi-react-native';
 import React from 'react';
-import type {PropsWithChildren} from 'react';
-import {
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  useColorScheme,
-  View,
-} from 'react-native';
+import {PaperProvider} from 'react-native-paper';
 
-import {
-  Colors,
-  DebugInstructions,
-  Header,
-  LearnMoreLinks,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
+import {MainNavigator} from './src/Navigator/MainNavigator';
+import {WakuProvider} from './src/Context/WakuContext';
+import {GestureHandlerRootView} from 'react-native-gesture-handler';
 
-type SectionProps = PropsWithChildren<{
-  title: string;
-}>;
+// 1. Get projectId
+const projectId = 'ba539d6f692c170372c9aa69db332a89';
 
-function Section({children, title}: SectionProps): JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
-  return (
-    <View style={styles.sectionContainer}>
-      <Text
-        style={[
-          styles.sectionTitle,
-          {
-            color: isDarkMode ? Colors.white : Colors.black,
-          },
-        ]}>
-        {title}
-      </Text>
-      <Text
-        style={[
-          styles.sectionDescription,
-          {
-            color: isDarkMode ? Colors.light : Colors.dark,
-          },
-        ]}>
-        {children}
-      </Text>
-    </View>
-  );
-}
-
-function App(): JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
-
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
-  };
-
-  return (
-    <SafeAreaView style={backgroundStyle}>
-      <StatusBar
-        barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-        backgroundColor={backgroundStyle.backgroundColor}
-      />
-      <ScrollView
-        contentInsetAdjustmentBehavior="automatic"
-        style={backgroundStyle}>
-        <Header />
-        <View
-          style={{
-            backgroundColor: isDarkMode ? Colors.black : Colors.white,
-          }}>
-          <Section title="Step One">
-            Edit <Text style={styles.highlight}>App.tsx</Text> to change this
-            screen and then come back to see your edits.
-          </Section>
-          <Section title="See Your Changes">
-            <ReloadInstructions />
-          </Section>
-          <Section title="Debug">
-            <DebugInstructions />
-          </Section>
-          <Section title="Learn More">
-            Read the docs to discover what to do next:
-          </Section>
-          <LearnMoreLinks />
-        </View>
-      </ScrollView>
-    </SafeAreaView>
-  );
-}
-
-const styles = StyleSheet.create({
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
+// 2. Create config
+const metadata = {
+  name: 'Web3Modal RN',
+  description: 'Web3Modal RN Example',
+  url: 'https://web3modal.com',
+  icons: ['https://avatars.githubusercontent.com/u/37784886'],
+  redirect: {
+    native: 'YOUR_APP_SCHEME://',
+    universal: 'YOUR_APP_UNIVERSAL_LINK.com',
   },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
-  },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
-  },
-  highlight: {
-    fontWeight: '700',
-  },
+};
+
+const chains = [mainnet, polygon];
+
+const wagmiConfig = defaultWagmiConfig({chains, projectId, metadata});
+
+// 3. Create modal
+createWeb3Modal({
+  projectId,
+  chains,
+  wagmiConfig,
 });
 
-export default App;
+export default function App() {
+  return (
+    <GestureHandlerRootView style={{flex: 1}}>
+      <NavigationContainer>
+        <PaperProvider settings={{rippleEffectEnabled: false}}>
+          <WagmiConfig config={wagmiConfig}>
+            <WakuProvider>
+              <MainNavigator />
+              <Web3Modal />
+            </WakuProvider>
+          </WagmiConfig>
+        </PaperProvider>
+      </NavigationContainer>
+    </GestureHandlerRootView>
+  );
+}
