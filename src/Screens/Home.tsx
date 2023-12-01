@@ -2,10 +2,10 @@ import {StyleSheet, View} from 'react-native';
 import {HomeScreen} from '../types/Screen';
 import {ActivityIndicator, AnimatedFAB, Button, Text} from 'react-native-paper';
 import React, {useCallback, useRef} from 'react';
-import {useAccount} from 'wagmi';
+import {useAccount, useBalance} from 'wagmi';
 import {Center} from '../Components/Center';
 import {shortAddress} from '../utils/address';
-import {W3mButton} from '@web3modal/wagmi-react-native';
+import {W3mConnectButton} from '@web3modal/wagmi-react-native';
 import BottomSheet from '@gorhom/bottom-sheet';
 import {useWaku} from '../Context/WakuContext';
 import {Party} from '../protos';
@@ -58,7 +58,7 @@ export const Home = ({navigation}: HomeScreen) => {
     return (
       <Center>
         <Text>To Use the Application Please connect to your wallet</Text>
-        <W3mButton />
+        <W3mConnectButton label="Connect" loadingLabel="Connecting..." />
       </Center>
     );
   }
@@ -175,7 +175,8 @@ const styles = StyleSheet.create({
   },
   fabButton: {
     position: 'absolute',
-    right: '-30%',
+    // right: '-%',
+    left: '85%',
     bottom: 25,
   },
 });

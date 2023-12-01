@@ -34,6 +34,7 @@ interface WakuContext {
   nodeStarted: boolean;
   createParty: (title: string) => Promise<void>;
   parties: any[];
+  sponsorParty: (value: string) => Promise<void>;
 }
 
 const context = createContext<WakuContext | null>(null);
@@ -50,7 +51,7 @@ nodeConfig.filter = true;
 
 export const WakuProvider: FC<PropsWithChildren> = ({children}) => {
   const [nodeStarted, setIsNodeStarted] = useState(false);
-  const {address, isConnected, status} = useAccount();
+  const {address, status} = useAccount();
 
   const [isPeersConnecting, setIsPeersConnecting] = useState<boolean | null>(
     null,
@@ -191,10 +192,10 @@ export const WakuProvider: FC<PropsWithChildren> = ({children}) => {
     [address],
   );
 
-  const sponsorParty = useCallback(value => {});
+  const sponsorParty = useCallback(async (value: string) => {}, []);
 
   return (
-    <context.Provider value={{nodeStarted, createParty, parties}}>
+    <context.Provider value={{nodeStarted, createParty, parties, sponsorParty}}>
       {children}
     </context.Provider>
   );

@@ -1,5 +1,5 @@
 import React, {useEffect} from 'react';
-import {Linking, StyleSheet, View} from 'react-native';
+import {Alert, Linking, StyleSheet, View} from 'react-native';
 import {Button, IconButton, Text} from 'react-native-paper';
 import {
   Camera,
@@ -15,7 +15,21 @@ export const Scanner = ({navigation}: ScannerScreen) => {
   const scanner = useCodeScanner({
     codeTypes: ['qr'],
     onCodeScanned: code => {
-      console.log(code, 'code...');
+      const value = code[0].value;
+      if (!value) {
+        return;
+      }
+      try {
+        const wakuURL = new URL(value ?? '');
+        if (wakuURL.protocol !== 'waku:') {
+          throw new Error('Invalid Protocol');
+        }
+        const host = wakuURL.host;
+        const partyName = wakuURL.pathname.replaceAll('/', '');
+        navigation.navigate('Sponsor', {partyName: partyName, to: host});
+      } catch (e) {
+        Alert.alert('Invalid QR Code');
+      }
     },
   });
 
@@ -74,9 +88,10 @@ export const Scanner = ({navigation}: ScannerScreen) => {
           device={device}
           isActive={isFocused}
           style={styles.camera}
-          onError={error => {
-            console.log(error, 'error...');
+          onError={() => {
+            Alert.alert('There is a camera error, please restart the app');
           }}
+          fps={10}
         />
       </View>
       <Button mode="contained-tonal" style={styles.chooseButton}>

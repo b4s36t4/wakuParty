@@ -1,7 +1,8 @@
+/* eslint-disable react-native/no-inline-styles */
 import '@walletconnect/react-native-compat';
 import {NavigationContainer} from '@react-navigation/native';
 import {WagmiConfig} from 'wagmi';
-import {mainnet, polygon} from 'viem/chains';
+import {polygon} from 'viem/chains';
 import {
   createWeb3Modal,
   defaultWagmiConfig,
@@ -24,12 +25,12 @@ const metadata = {
   url: 'https://web3modal.com',
   icons: ['https://avatars.githubusercontent.com/u/37784886'],
   redirect: {
-    native: 'YOUR_APP_SCHEME://',
-    universal: 'YOUR_APP_UNIVERSAL_LINK.com',
+    native: 'waku://',
+    universal: 'WakuParty.com',
   },
 };
 
-const chains = [mainnet, polygon];
+const chains = [polygon];
 
 const wagmiConfig = defaultWagmiConfig({chains, projectId, metadata});
 

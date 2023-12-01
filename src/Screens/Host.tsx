@@ -1,3 +1,4 @@
+/* eslint-disable react-native/no-inline-styles */
 import React, {useCallback, useRef, useState} from 'react';
 import {Keyboard, StyleSheet, View} from 'react-native';
 import {Button, Text, TextInput} from 'react-native-paper';
